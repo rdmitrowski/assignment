@@ -1,0 +1,6 @@
+chispa
+pyspark
+pytest
+flake8
+wheel
+setuptools
