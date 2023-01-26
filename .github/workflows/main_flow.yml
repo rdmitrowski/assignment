@@ -1,4 +1,4 @@
-name: Flow for deploying application
+name: Assignment action
 on:
   push:
     branches: [ "main" ]
@@ -35,9 +35,9 @@ jobs:
         ls ./dist/
     - name: Check distribution file
       run: |
-        check-wheel-contents ./dist/assignment*
+        check-wheel-contents ./dist/BitcoinTrading*
     - name: Download artifact from build job
       uses: actions/upload-artifact@v3
       with:
         name: assignment
-        path: ./dist/assignment*
+        path: ./dist/BitcoinTrading*
