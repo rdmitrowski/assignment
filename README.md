@@ -1,13 +1,13 @@
-  Application joins two datasets loaded from files, prepare filtering based on input parameter and save limited information in output file.
+  Application joins two datasets loaded from csv files (clients data and transactions data), files are stored in input_data directory.
+  Additional operation like data filtering, column calculating and renaming are preparing on dataset and as a output file in client_data directory is saveed.
 
-  usage: python3 BitcoinTrading.py <users_input> <transactions_input> <country> 
-  or 
-  usage: python3 BitcoinTrading.py <users_input> <transactions_input> <country> <output_file>
+  usage: 
+  __main__.py -u FILE_USERS -t FILE_TRANSACTIONS -f FILTER [-out FILE_OUTPUT]
   
-  <users_input>        - users fileneme located in input_data directory
-  <transactions_input> - transactions fileneme located in input_data directory
-  <country>            - filter data for specific country
-  <output_file>        - optional parameter with output filename located in client_data directory
+  FILE_USERS        - users fileneme located in input_data directory
+  FILE_TRANSACTIONS - transactions fileneme located in input_data directory
+  FILTER            - filter data for specific country
+  FILE_OUTPUT       - optional parameter with output filename located in client_data directory
                        if not added default filename is:
                        output_data_~date~.csv 
                                    where ~date~  dd-mm-yyyy_hh24miss

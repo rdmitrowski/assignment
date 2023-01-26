@@ -1,6 +1,5 @@
 chispa
 pyspark
 pytest
-flake8
 wheel
-setuptools
+check-wheel-contents
