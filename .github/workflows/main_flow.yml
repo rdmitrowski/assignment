@@ -30,6 +30,9 @@ jobs:
     - name: Create distribution file
       run: |
         python3 setup.py bdist_wheel
+    - name: Validate folder with distribution file
+      run: |
+        ls ./dist/
     - name: Check distribution file
       run: |
         check-wheel-contents ./dist/assignment*
