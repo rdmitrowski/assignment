@@ -1,0 +1,40 @@
+name: Flow for deploying application
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Run pipeline on ${{ matrix.os }} python ver ${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        version: [3.7, 3.8]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.7"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install setuptools
+    - name: Test with pytest
+      run: |
+        pytest
+    - name: Create distribution file
+      run: |
+        python3 setup.py bdist_wheel
+    - name: Check distribution file
+      run: |
+        check-wheel-contents ./dist/assignment*
+    - name: Download artifact from build job
+      uses: actions/upload-artifact@v3
+      with:
+        name: assignment
+        path: ./dist/assignment*
