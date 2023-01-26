@@ -11,30 +11,60 @@ from datetime import datetime
 
 class BitcoinTrading:
     """
-    This class load two files from filesystem located in input_data directory
+    This class with functions to load two files from filesystem located in input_data directory
     (user data and transaction data), modify it,
     join and save a result in client_data directory
     """
 
     def __init__(self):
+        """
+        Class initialization, creating log, and session
+        """
         self._log_initialize()
         self.sparkSess = self.get_spark_session()
         # self._run_program_by_class_params(class_parameters)
 
     def get_spark_session(self):
-       return SparkSession.builder.appName("InitializeBitcoinTradingSparkSession").getOrCreate()
+        """
+        get_spark_session
+        Returns:
+            sparkSession
+        """
+        return SparkSession.builder \
+            .appName("InitializeBitcoinTradingSparkSession") \
+            .getOrCreate()
 
     def run_processing_flow(self, class_parameters: dict):
-        self.file_info_logging(f"Initialized input parameters {class_parameters['file_users']} {class_parameters['file_transactions']} {class_parameters['filter']} {class_parameters['file_output']}")
+        """Run all processing flow for input parameters dict
+  
+        Args:
+            class_parameters (dict): dictionary with {file_users, file_transactions, filter, file_output as optional}
+        """
+        self.file_info_logging(f"Initialized input parameters \
+            {class_parameters['file_users']} \
+            {class_parameters['file_transactions']} \
+            {class_parameters['filter']} \
+            {class_parameters['file_output']}")
         df_users = self.load_file(f"input_data/{class_parameters['file_users']}")
         df_transactions = self.load_file(f"input_data/{class_parameters['file_transactions']}")
-        df_users_filter = self.dataset_filtering(df_users, f"country in ('{class_parameters['filter']}')")
+        df_users_filter = \
+            self.dataset_filtering(df_users,
+                                   f"country in ('{class_parameters['filter']}')")
         df_users_remove = self.column_remove(df_users_filter, "email")
         df_join = self.dataset_join(df_users_remove, df_transactions, 'id')
-        df_users_new_cols = self.column_create(df_join, "New name", concat(col("first_name"), lit(' '), col("last_name")))
-        df_output = self.generate_output(df_users_new_cols, ['New name', 'id', 'btc_a', 'cc_t', ])
-        df_output = self.column_rename(df_output, {'id': 'client_identifier', 'btc_a': 'bitcoin_address', 'cc_t': 'credit_card_type'})
-        self.write_output(df_output, f"client_data/{class_parameters['file_output']}")
+        df_users_new_cols = \
+            self.column_create(
+                df_join,
+                "New name",
+                concat(col("first_name"), lit(' '), col("last_name")))
+        df_output = self.generate_output(df_users_new_cols,
+                                         ['New name', 'id', 'btc_a', 'cc_t', ])
+        df_output = self.column_rename(df_output,
+                                       {'id': 'client_identifier',
+                                        'btc_a': 'bitcoin_address',
+                                        'cc_t': 'credit_card_type'})
+        self.write_output(df_output,
+                          f"client_data/{class_parameters['file_output']}")
 
     def file_info_logging(self, val: str):
         self.logger.info(val)
@@ -46,8 +76,11 @@ class BitcoinTrading:
         self.logger.error(val)
 
     def _log_initialize(self):
-        print("log initialize")
-        log_handler = logging.handlers.RotatingFileHandler(filename='BitcoinTrading.log', mode='a', maxBytes=10**3*3, backupCount=5)
+        log_handler = logging.handlers.RotatingFileHandler(
+            filename='BitcoinTrading.log',
+            mode='a',
+            maxBytes=10**3*3,
+            backupCount=5)
         formatter = logging.Formatter(
           '%(asctime)s BitcoinTrading [%(process)d]: [%(levelname)s] %(message)s',
           '%b %d %H:%M:%S')
@@ -87,7 +120,6 @@ class BitcoinTrading:
     def generate_output(self, df: DataFrame, column_list: list) -> DataFrame:
         self.file_info_logging("Generate output")
         return df.select(column_list)
-        #return df.select("New name", "client_identifier",col("btc_a").alias("bitcoin_address"),col("cc_t").alias("credit_card_type"))
 
     def write_output(self, df: DataFrame, file_output: str):
         try:
@@ -125,29 +157,3 @@ class BitcoinTrading:
         except Exception as e:
             self.file_error_logging(e)
             raise
-
-
-def main():
-    NewBitcoinTradingClass = BitcoinTrading()
-    from datetime import datetime
-    now = datetime.now()
-    parser = argparse.ArgumentParser(description='Program to parse two dataset, filter, join and return output')
-    parser.add_argument('-file_users', type=str, help='Name of users file', required=True)
-    parser.add_argument('-file_transactions', type=str, help='Name of transaction file', required=True)
-    parser.add_argument('-filter', type=str, help='Country filter', required=True)
-    parser.add_argument('-file_output', type=str, help='Optional output file name', required=False, default='output_data_' + now.strftime("%d-%m-%Y_%H%M%S") + '.csv')
-    NewBitcoinTradingClass.params = parser.parse_args()
-
-    NewBitcoinTradingClass.file_info_logging('Initialized input parameters {NewBitcoinTradingClass.params.file_users} {NewBitcoinTradingClass.params.file_transactions} {NewBitcoinTradingClass.params.filter}')
-    NewBitcoinTradingClass.load_file(f'input_data/{NewBitcoinTradingClass.params.file_users}', 0)
-    NewBitcoinTradingClass.load_file(f'input_data/{NewBitcoinTradingClass.params.file_transactions}', 1)
-    NewBitcoinTradingClass.dataset_filtering(f"country in ('{NewBitcoinTradingClass.params.filter}')")
-    NewBitcoinTradingClass.column_remove("email")
-    NewBitcoinTradingClass.column_rename("id", "client_identifier")
-    NewBitcoinTradingClass.column_create("New name", concat(col("first_name"), lit(' '), col("last_name")))
-    NewBitcoinTradingClass.column_remove("first_name")
-    NewBitcoinTradingClass.column_remove("last_name")
-    NewBitcoinTradingClass.column_remove_tr("cc_n")
-    NewBitcoinTradingClass.dataset_join()
-    NewBitcoinTradingClass.generate_output()
-    NewBitcoinTradingClass.write_output(f'client_data/{NewBitcoinTradingClass.params.file_output}')

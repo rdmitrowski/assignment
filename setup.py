@@ -1,12 +1,16 @@
 from setuptools import setup, find_packages
-import pathlib
+# import pathlib
 
-here = pathlib.Path(__file__).parent.resolve()
+# here = pathlib.Path(__file__).parent.resolve()
 
 setup(
     name='BitcoinTrading',
+    author="Rafal Dmitrowski",
+    author_email="rafal.dmitrowski@capgemini.com",
     version='1.0',
-    description='Project that join load two files, prepare filering/modification operation and save ouput in file',
+    description='Project that load and join two files, \
+                 prepare filtering/modification operation \
+                 and save output in file',
     packages=find_packages(exclude=['tests']),
-    install_requires=['pytest','pyspark', 'chispa']
+    install_requires=['pytest', 'pyspark', 'chispa']
     )
