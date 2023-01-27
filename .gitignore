@@ -1,0 +1,8 @@
+# general things to ignore
+build/
+__pycache__/
+*.log.*
+client_data/
+.pytest_cache/
+.vscode/
+tests/__pycache__/

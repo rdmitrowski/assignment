@@ -9,7 +9,7 @@ def parse_arguments() -> dict:
     correct run statement
 
     Returns:
-        dict: _description_
+        dict: {file_users: , file_transactions: ,filter: , file_output:}
     """
 
     parser = argparse.ArgumentParser(
