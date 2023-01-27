@@ -3,10 +3,11 @@ import sys
 import argparse
 import logging
 import time
+from datetime import datetime
 from pyspark.sql.functions import concat, col, lit
 from pyspark.sql import SparkSession, DataFrame
 from logging.handlers import RotatingFileHandler
-from datetime import datetime
+
 # from assignment.sess_init import get_spark_session
 
 
@@ -22,8 +23,6 @@ class BitcoinTrading:
         Class initialization, creating log, and session
         """
         self._log_initialize()
-        self.sparkSess = self.get_spark_session()
-        # self.sparkSess = get_spark_session()
         # self._run_program_by_class_params(class_parameters)
 
     def get_spark_session(self):
@@ -32,9 +31,10 @@ class BitcoinTrading:
         Returns:
             sparkSession
         """
+        # return get_spark_session()
         return SparkSession.builder \
-            .appName("InitializeBitcoinTradingSparkSession") \
-            .getOrCreate()
+        .appName("InitializeBitcoinTradingSparkSession") \
+        .getOrCreate()
 
     def run_processing_flow(self, class_parameters: dict):
         """Run all processing flow for input parameters dict
@@ -46,6 +46,7 @@ class BitcoinTrading:
             {class_parameters['file_transactions']} \
             {class_parameters['filter']} \
             {class_parameters['file_output']}")
+        self.sparkSess = self.get_spark_session()
         df_users = self.load_file(f"input_data/{class_parameters['file_users']}")
         df_transactions = self.load_file(f"input_data/{class_parameters['file_transactions']}")
         df_users_filter = \

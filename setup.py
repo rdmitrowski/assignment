@@ -3,6 +3,9 @@ from setuptools import setup, find_packages
 
 # here = pathlib.Path(__file__).parent.resolve()
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='BitcoinTrading',
     author="Rafal Dmitrowski",
@@ -12,5 +15,5 @@ setup(
                  prepare filtering/modification operation \
                  and save output in file',
     packages=find_packages(exclude=['tests']),
-    install_requires=['pytest', 'pyspark', 'chispa']
+    install_requires=required
     )
