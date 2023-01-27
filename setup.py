@@ -15,5 +15,5 @@ setup(
                  prepare filtering/modification operation \
                  and save output in file',
     packages=find_packages(exclude=['tests']),
-    install_requires=required
+    install_requires=requirements
     )
