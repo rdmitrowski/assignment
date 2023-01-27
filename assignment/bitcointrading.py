@@ -41,7 +41,7 @@ class BitcoinTrading:
         Args:
             class_parameters (dict): dictionary with {file_users, file_transactions, filter, file_output as optional}
         """
-        self.file_info_logging(f"Initialized input parameters \
+        self.logger.info(f"Initialized input parameters \
             {class_parameters['file_users']} \
             {class_parameters['file_transactions']} \
             {class_parameters['filter']} \
@@ -68,12 +68,6 @@ class BitcoinTrading:
         self.write_output(df_output,
                           f"client_data/{class_parameters['file_output']}")
 
-    def file_info_logging(self, val: str):
-        self.logger.info(val)
-
-    def file_warning_logging(self, val: str):
-        self.logger.warning(val)
-
     def file_error_logging(self, val: str):
         self.logger.error(val)
 
@@ -98,64 +92,64 @@ class BitcoinTrading:
         self.logger = logger
 
     def dataset_filtering(self, df: DataFrame, condition: str) -> DataFrame:
-        self.file_info_logging(f"BitcoinTrading.dataset_filtering: Output filtered by: {condition}")
+        self.logger.info(f"BitcoinTrading.dataset_filtering: Output filtered by: {condition}")
         return df.filter(condition)
 
     def column_remove(self, df: DataFrame, column_name: str) -> DataFrame:
-        self.file_info_logging(f"Remove column from dataset: {column_name}")
+        self.logger.info(f"Remove column from dataset: {column_name}")
         return df.drop(column_name)
 
     def column_rename(self, df: DataFrame, col_map: dict) -> DataFrame:
         for key, value in col_map.items():
             df = df.withColumnRenamed(key, value)
-            self.file_info_logging(f"Rename column in dataset: {key} to {value}")
+            self.logger.info(f"Rename column in dataset: {key} to {value}")
         return df
 
     def column_create(self, df: DataFrame, column_name: str, column_value: str) -> DataFrame:
-        self.file_info_logging(f"Create column in dataset: {column_name} as {column_value}")
+        self.logger.info(f"Create column in dataset: {column_name} as {column_value}")
         return df.withColumn(column_name, column_value)
 
     def dataset_join(self, df1: DataFrame, df2: DataFrame, join_key: str) -> DataFrame:
-        self.file_info_logging("Join two datasets")
+        self.logger.info("Join two datasets")
         return df1.join(df2, on=join_key, how="inner")
 
     def generate_output(self, df: DataFrame, column_list: list) -> DataFrame:
-        self.file_info_logging("Generate output")
+        self.logger.info("Generate output")
         return df.select(column_list)
 
     def write_output(self, df: DataFrame, file_output: str):
         try:
-            self.file_info_logging("Trying to save a file into filesystem")
+            self.logger.info("Trying to save a file into filesystem")
             df.write.format("csv").mode("overwrite").option("header", "true").save(file_output)
-            self.file_info_logging(f"File {file_output} saved in filesystem with {str(df.count())} row(s)")
+            self.logger.info(f"File {file_output} saved in filesystem with {str(df.count())} row(s)")
         except IOError as IOerr:
-            self.file_error_logging(f"Problem with saving {file_output}")
-            self.file_error_logging(IOerr)
+            self.logger.error(f"Problem with saving {file_output}")
+            self.logger.error(IOerr)
         except Exception as e:
-            self.file_error_logging(e)
+            self.logger.error(e)
 
     def load_file(self, file_name: str) -> DataFrame:
         file_type = "csv"
         infer_schema = "false"
         first_row_is_header = "true"
         delimiter = ","
-        self.file_info_logging(f"Loading file: {file_name}")
+        self.logger.info(f"Loading file: {file_name}")
         try:
             df = self.sparkSess.read.format(file_type) \
                 .option("inferSchema", infer_schema) \
                 .option("header", first_row_is_header) \
                 .option("sep", delimiter) \
                 .load(file_name)
-            self.file_info_logging(f'Loaded {str(df.count())} from file_name')
+            self.logger.info(f'Loaded {str(df.count())} from file_name')
             return df
         except FileNotFoundError as err:
-            self.file_error_logging(f"Problem with loading {file_name}, file doesn't exists")
-            self.file_error_logging(err)
+            self.logger.error(f"Problem with loading {file_name}, file doesn't exists")
+            self.logger.error(err)
             raise
         except IOError as IOerr:
-            self.file_error_logging(f"Problem with loading {file_name}, IOError")
-            self.file_error_logging(err)
+            self.logger.error(f"Problem with loading {file_name}, IOError")
+            self.logger.error(err)
             raise
         except Exception as e:
-            self.file_error_logging(e)
+            self.logger.error(e)
             raise
