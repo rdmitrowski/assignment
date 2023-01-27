@@ -3,14 +3,18 @@ from datetime import datetime
 
 
 def parse_arguments() -> dict:
-    """parse_arguments validate imput parameters and assign it to dict.
-    In case of missing parameter(s) there is information about correct run statement
+    """
+    parse_arguments validate imput parameters and assign it to dict.
+    In case of missing parameter(s) there is information about
+    correct run statement
 
     Returns:
         dict: _description_
     """
+
     parser = argparse.ArgumentParser(
-        description='Merge two dataset, prepare modification on it and save a result')
+        description='Merge two dataset, prepare modification on it \
+            and save a result')
     parser.add_argument('-u', '--file_users',
                         type=str,
                         help='Name of users file',
