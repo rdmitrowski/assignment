@@ -38,7 +38,6 @@ class BitcoinTrading:
 
     def run_processing_flow(self, class_parameters: dict):
         """Run all processing flow for input parameters dict
-  
         Args:
             class_parameters (dict): dictionary with {file_users, file_transactions, filter, file_output as optional}
         """
