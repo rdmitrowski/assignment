@@ -20,7 +20,7 @@ class BitcoinTrading:
 
     def __init__(self):
         """
-        Class initialization, creating log, and session
+        Class initialization, creating log
         """
         self._log_initialize()
         # self._run_program_by_class_params(class_parameters)
@@ -32,9 +32,11 @@ class BitcoinTrading:
             sparkSession
         """
         # return get_spark_session()
-        return SparkSession.builder \
-        .appName("InitializeBitcoinTradingSparkSession") \
-        .getOrCreate()
+        return (
+            SparkSession.builder
+            .appName("InitializeBitcoinTradingSparkSession")
+            .getOrCreate()
+        )
 
     def run_processing_flow(self, class_parameters: dict):
         """Run all processing flow for input parameters dict
@@ -51,7 +53,7 @@ class BitcoinTrading:
         df_transactions = self.load_file(f"input_data/{class_parameters['file_transactions']}")
         df_users_filter = \
             self.dataset_filtering(df_users,
-                                   f"country in ('{class_parameters['filter']}')")
+                                   f"""country in ("{class_parameters['filter']}")""")
         df_users_remove = self.column_remove(df_users_filter, "email")
         df_join = self.dataset_join(df_users_remove, df_transactions, 'id')
         df_users_new_cols = \
@@ -60,16 +62,13 @@ class BitcoinTrading:
                 "New name",
                 concat(col("first_name"), lit(' '), col("last_name")))
         df_output = self.generate_output(df_users_new_cols,
-                                         ['New name', 'id', 'btc_a', 'cc_t', ])
+                                         ['New name', 'id', 'btc_a', 'cc_t'])
         df_output = self.column_rename(df_output,
                                        {'id': 'client_identifier',
                                         'btc_a': 'bitcoin_address',
                                         'cc_t': 'credit_card_type'})
         self.write_output(df_output,
                           f"client_data/{class_parameters['file_output']}")
-
-    def file_error_logging(self, val : str):
-        self.logger.error(val)
 
     def _log_initialize(self):
         log_handler = logging.handlers.RotatingFileHandler(
@@ -129,7 +128,7 @@ class BitcoinTrading:
             self.logger.error(e)
 
     def load_file(self, file_name: str) -> DataFrame:
-        file_type="csv"
+        file_type = "csv"
         infer_schema = "false"
         first_row_is_header = "true"
         delimiter = ","
