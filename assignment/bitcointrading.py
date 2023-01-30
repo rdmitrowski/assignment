@@ -71,6 +71,10 @@ class BitcoinTrading:
                           f"client_data/{class_parameters['file_output']}")
 
     def _log_initialize(self):
+        """
+        This function initialize rotating by size logs
+        It's handle into file add into screen
+        """
         log_handler = logging.handlers.RotatingFileHandler(
             filename='BitcoinTrading.log',
             mode='a',
@@ -91,32 +95,75 @@ class BitcoinTrading:
         self.logger = logger
 
     def dataset_filtering(self, df: DataFrame, condition: str) -> DataFrame:
+        """
+        This function filters data in dataframe
+        Input: Dataframe
+               condition str
+        Output: Dataframe
+        """
         self.logger.info(f"BitcoinTrading.dataset_filtering: Output filtered by: {condition}")
         return df.filter(condition)
 
     def column_remove(self, df: DataFrame, column_name: str) -> DataFrame:
+        """
+        This function removes column in dataframe
+        Input: Dataframe
+               column_name str
+        Output: Dataframe
+        """
         self.logger.info(f"Remove column from dataset: {column_name}")
         return df.drop(column_name)
 
     def column_rename(self, df: DataFrame, col_map: dict) -> DataFrame:
+        """
+        This function renames columns in dataframe
+        Input: Dataframe
+               col_map dict {old_name1: new_name1, old_name2, new_name2..}
+        Output: Dataframe
+        """
         for key, value in col_map.items():
             df = df.withColumnRenamed(key, value)
             self.logger.info(f"Rename column in dataset: {key} to {value}")
         return df
 
     def column_create(self, df: DataFrame, column_name: str, column_value: str) -> DataFrame:
+        """
+        This function creates new columns in dataframe
+        Input: Dataframe
+               column name str
+               column value str
+        Output: Dataframe
+        """
         self.logger.info(f"Create column in dataset: {column_name} as {column_value}")
         return df.withColumn(column_name, column_value)
 
     def dataset_join(self, df1: DataFrame, df2: DataFrame, join_key: str) -> DataFrame:
+        """
+        This function joins two dataframes
+        Input: Dataframe
+               Dataframe
+               join_key str
+        Output: Dataframe
+        """
         self.logger.info("Join two datasets")
         return df1.join(df2, on=join_key, how="inner")
 
     def generate_output(self, df: DataFrame, column_list: list) -> DataFrame:
+        """
+        This function generates dataframe with specific column listed
+        Input: Dataframe
+               column_list list
+        Output: Dataframe
+        """
         self.logger.info("Generate output")
         return df.select(column_list)
 
     def write_output(self, df: DataFrame, file_output: str):
+        """
+        This function save dataframe as a file in output_location (client_data)
+        Input: Datafram
+        Output: file_output str - file name
+        """
         try:
             self.logger.info("Trying to save a file into filesystem")
             df.write.format("csv").mode("overwrite").option("header", "true").save(file_output)
@@ -128,6 +175,11 @@ class BitcoinTrading:
             self.logger.error(e)
 
     def load_file(self, file_name: str) -> DataFrame:
+        """
+        This function loads file into dataframe from input_location (input_data)
+        Input: file_name str
+        Output: Dataframe
+        """
         file_type = "csv"
         infer_schema = "false"
         first_row_is_header = "true"
