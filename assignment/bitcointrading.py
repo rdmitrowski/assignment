@@ -8,7 +8,7 @@ from pyspark.sql.functions import concat, col, lit
 from pyspark.sql import SparkSession, DataFrame
 from logging.handlers import RotatingFileHandler
 
-# from assignment.sess_init import get_spark_session
+#from assignment.sess_init import get_spark_session
 
 
 class BitcoinTrading:

@@ -8,10 +8,7 @@ TEST_DATA = [(10, "a", 1), (20, "b", 2), (30, "c", 3), (40, "d", 4), (50, "e", 5
 TEST_COLUMNS = ["id", "seq_number", "value"]
 
 bt = BitcoinTrading()
-#spark = bt.get_spark_session()
 
-
-#pytestmark = pytest.mark.usefixtures("spark_session")
 
 def load_dataframe(spark_session) -> DataFrame:
     return spark_session.createDataFrame(data=TEST_DATA, schema=TEST_COLUMNS)
