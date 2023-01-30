@@ -68,7 +68,7 @@ class BitcoinTrading:
         self.write_output(df_output,
                           f"client_data/{class_parameters['file_output']}")
 
-    def file_error_logging(self, val: str):
+    def file_error_logging(self, val : str):
         self.logger.error(val)
 
     def _log_initialize(self):
@@ -129,7 +129,7 @@ class BitcoinTrading:
             self.logger.error(e)
 
     def load_file(self, file_name: str) -> DataFrame:
-        file_type = "csv"
+        file_type="csv"
         infer_schema = "false"
         first_row_is_header = "true"
         delimiter = ","
