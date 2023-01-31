@@ -9,5 +9,5 @@
   FILTER            - filter data for specific country
   FILE_OUTPUT       - optional parameter with output filename located in client_data directory
                        if not added default filename is:
-                       output_data_<date>.csv 
-                                   where <date>  dd-mm-yyyy_hh24miss
+                       output_data_*date*.csv 
+                                   where *date*  dd-mm-yyyy_hh24miss
