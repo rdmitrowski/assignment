@@ -8,7 +8,7 @@ from pyspark.sql.functions import concat, col, lit
 from pyspark.sql import SparkSession, DataFrame
 from logging.handlers import RotatingFileHandler
 
-#from assignment.sess_init import get_spark_session
+import assignment.sess_init as sess_init
 
 
 class BitcoinTrading:
@@ -31,12 +31,7 @@ class BitcoinTrading:
         Returns:
             sparkSession
         """
-        # return get_spark_session()
-        return (
-            SparkSession.builder
-            .appName("InitializeBitcoinTradingSparkSession")
-            .getOrCreate()
-        )
+        return sess_init.get_spark_session()
 
     def run_processing_flow(self, class_parameters: dict):
         """Run all processing flow for input parameters dict

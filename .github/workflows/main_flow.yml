@@ -26,7 +26,7 @@ jobs:
         pip install setuptools
     - name: Test with pytest
       run: |
-        pytest
+        python -m pytest --import-mode=append tests/
     - name: Create distribution file
       run: |
         python3 setup.py bdist_wheel

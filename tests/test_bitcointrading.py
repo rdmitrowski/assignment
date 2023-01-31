@@ -2,7 +2,8 @@ import pyspark
 from chispa import assert_df_equality
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import concat, col, lit
-from ..assignment.bitcointrading import BitcoinTrading
+from assignment.bitcointrading import BitcoinTrading
+import sys
 
 TEST_DATA = [(10, "a", 1), (20, "b", 2), (30, "c", 3), (40, "d", 4), (50, "e", 5)]
 TEST_COLUMNS = ["id", "seq_number", "value"]
@@ -15,6 +16,7 @@ def load_dataframe(spark_session) -> DataFrame:
 
 
 def test_dataset_filtering(spark_session):
+    print(f'Validation {sys.path}')
     expected_data = [(10, "a", 1), (50, "e", 5)]
     expected_columns = ["id", "seq_number", "value"]
     df_expected = spark_session.createDataFrame(data=expected_data, schema=expected_columns)

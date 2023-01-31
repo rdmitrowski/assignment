@@ -7,6 +7,8 @@ def get_spark_session():
     Returns:
         sparkSession
     """
-    return SparkSession.builder \
-        .appName("InitializeBitcoinTradingSparkSession") \
+    return (
+        SparkSession.builder.master("local[1]")
+        .appName("InitializeSparkSession")
         .getOrCreate()
+        )
